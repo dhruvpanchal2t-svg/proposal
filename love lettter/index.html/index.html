@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:Poppins;
+overflow:hidden;
+}
+
+/* SLIDES */
+.slide{
+position:fixed;
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:linear-gradient(270deg,#ff4e8a,#ff9a44,#ffd93d,#7b5cff,#00c3ff,#00ffa3);
+background-size:1000% 1000%;
+animation:bg 18s infinite;
+color:white;
+transition:.6s;
+}
+
+.hidden{display:none;}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.center{text-align:center}
+
+/* glow text */
+.glow{
+font-size:70px;
+text-shadow:0 0 20px white,0 0 40px pink,0 0 70px purple;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(1)}
+}
+
+button{
+padding:16px 40px;
+font-size:18px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
+margin:10px;
+}
+
+/* question card */
+.card{
+background:rgba(0,0,0,0.35);
+padding:40px;
+border-radius:25px;
+backdrop-filter:blur(18px);
+text-align:center;
+width:460px;
+position:relative;
+}
+
+#yes{
+background:#00ffa3;
+color:black;
+}
+
+#no{
+background:#ff4d6d;
+color:white;
+position:absolute;
+left:60%;
+top:65%;
+}
+
+.big{font-size:80px}
+#msg{min-height:24px;margin-top:10px}
+
+/* floating hearts */
+.heart{
+position:fixed;
+font-size:22px;
+animation:float 6s linear infinite;
+}
+@keyframes float{
+from{transform:translateY(0)}
+to{transform:translateY(-120vh)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div id="p1" class="slide">
+<div class="center">
+<h1 class="glow">Hey… 💫</h1>
+<p>I made something for you</p>
+<button onclick="go(2)">Start</button>
+</div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="p2" class="slide hidden">
+<div class="center">
+<h1 class="glow">Wait…</h1>
+<p>This is important</p>
+<button onclick="go(3)">Continue</button>
+</div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="p3" class="slide hidden">
+<div class="center">
+<h1 class="glow">One question</h1>
+<p>Answer honestly 😌</p>
+<button onclick="go(4)">I'm ready</button>
+</div>
+</div>
+
+<!-- PAGE 4 QUESTION -->
+<div id="p4" class="slide hidden">
+<div class="card">
+
+<h1>Do you love me? 💖</h1>
+<div id="dialogue"></div>
+
+<button id="yes">Yes 😍</button>
+<button id="no">No 😅</button>
+
+<div id="msg"></div>
+
+</div>
+</div>
+
+<!-- PAGE 5 YES -->
+<div id="p5" class="slide hidden">
+<div class="center">
+<h1 class="big">YESSS 💖</h1>
+<p>You just made my day 😭</p>
+</div>
+</div>
+
+<script>
+// change page
+function go(n){
+for(let i=1;i<=5;i++){
+document.getElementById("p"+i).classList.add("hidden");
+}
+document.getElementById("p"+n).classList.remove("hidden");
+}
+
+/* floating hearts */
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="💖";
+h.style.left=Math.random()*100+"vw";
+h.style.top="100vh";
+document.body.appendChild(h);
+h.animate([{transform:"translateY(0)"},{transform:"translateY(-120vh)"}],{duration:6000});
+setTimeout(()=>h.remove(),6000);
+},350);
+
+/* typing dialogue */
+const lines=[
+"I was thinking for a while…",
+"So I made this 😌",
+"I wanted to ask properly…",
+"Serious question now…"
+];
+
+let a=0,b=0;
+function type(){
+if(a<lines.length){
+document.getElementById("dialogue").innerHTML=lines[a].slice(0,b++);
+if(b<=lines[a].length){
+setTimeout(type,40);
+}else{
+a++;b=0;setTimeout(type,700);
+}}
+}
+type();
+
+/* moving NO */
+const no=document.getElementById("no");
+const msg=document.getElementById("msg");
+
+const jokes=[
+"Are you sure? 😏",
+"Wrong button 😂",
+"Try YES instead 😌",
+"You can't catch me 😜",
+"Still trying? 👀",
+"Press YES ❤️"
+];
+
+let j=0;
+
+function moveNo(){
+const card=document.querySelector(".card");
+const rect=card.getBoundingClientRect();
+
+let x=Math.random()*(rect.width-100);
+let y=Math.random()*(rect.height-60);
+
+no.style.left=x+"px";
+no.style.top=y+"px";
+
+msg.innerText=jokes[j%jokes.length];
+j++;
+}
+
+no.addEventListener("mouseover",moveNo);
+no.addEventListener("touchstart",moveNo);
+no.addEventListener("click",moveNo);
+
+/* YES */
+document.getElementById("yes").onclick=()=>{
+go(5);
+
+/* confetti */
+for(let i=0;i<250;i++){
+let c=document.createElement("div");
+c.style.position="fixed";
+c.style.left=Math.random()*100+"vw";
+c.style.top="-20px";
+c.style.width="10px";
+c.style.height="14px";
+c.style.background=`hsl(${Math.random()*360}deg 90% 60%)`;
+c.style.animation="fall 3s linear";
+document.body.appendChild(c);
+}
+};
+</script>
+
+<style>
+@keyframes fall{
+to{transform:translateY(110vh) rotate(720deg)}
+}
+</style>
+
+</body>
+</html>
